@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Development + AI Program Entrance Exam</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --success: #4cc9f0;
+            --success-dark: #3aa8d0;
+            --danger: #f72585;
+            --danger-dark: #d5176e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --darker: #1a1a1a;
+            --border-radius: 0.5rem;
+            --box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            line-height: 1.6;
+            color: var(--darker);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+        
+        h1, h2 {
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+        }
+        
+        .intro {
+            margin-bottom: 2.5rem;
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .question-container {
+            margin-bottom: 1.8rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            background-color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+        
+        .question-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--darker);
+            font-size: 1.1rem;
+        }
+        
+        .options {
+            margin-left: 0.5rem;
+        }
+        
+        .option {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .option input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .option label:hover {
+            background: #e9ecef;
+        }
+        
+        .option input:checked + label {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .option input:focus + label {
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+        }
+        
+        .option label::before {
+            content: '';
+            display: inline-block;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            margin-right: 1rem;
+            transition: var(--transition);
+        }
+        
+        .option input:checked + label::before {
+            border-color: white;
+            background: white;
+            background-image: radial-gradient(var(--primary) 35%, transparent 40%);
+        }
+        
+        button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.2);
+            letter-spacing: 0.5px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(67, 97, 238, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 3rem;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .passed {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05));
+            border: 1px solid var(--success);
+            color: #0a6d8a;
+        }
+        
+        .failed {
+            background: linear-gradient(135deg, rgba(247, 37, 133, 0.1), rgba(247, 37, 133, 0.05));
+            border: 1px solid var(--danger);
+            color: #a4133c;
+        }
+        
+        .result h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .result p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .email-btn {
+            background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+            margin-top: 1.5rem;
+        }
+        
+        .success-btn {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            margin-top: 1.5rem;
+        }
+        
+        .registration-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(76, 201, 240, 0.2);
+        }
+        
+        .registration-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(76, 201, 240, 0.3);
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 1.5rem 0;
+            color: var(--primary);
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            animation: confettiFall 5s linear forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .already-submitted {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .already-submitted .question-container {
+            background: #f8f9fa;
+        }
+        
+        .already-submitted label {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                margin: 1rem auto;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question-container {
+                padding: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 1.2rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .question {
+                font-size: 1rem;
+            }
+            
+            .option label {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Web Development + AI Program</h1>
+        <p class="intro">Entrance Examination - Answer all 20 questions to evaluate your basic knowledge. Score 70% or above to qualify for the program.</p>
+        
+        <form id="examForm">
+            <!-- Question 1 -->
+            <div class="question-container">
+                <div class="question">1. What does HTML stand for?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q1" value="a" id="q1a">
+                        <label for="q1a">Hyper Text Markup Language</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="b" id="q1b">
+                        <label for="q1b">Hyperlinks and Text Markup Language</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="c" id="q1c">
+                        <label for="q1c">Home Tool Markup Language</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question-container">
+                <div class="question">2. Which HTML tag is used to link an external JavaScript file?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q2" value="a" id="q2a">
+                        <label for="q2a">&lt;script&gt;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="b" id="q2b">
+                        <label for="q2b">&lt;js&gt;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="c" id="q2c">
+                        <label for="q2c">&lt;javascript&gt;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="d" id="q2d">
+                        <label for="q2d">&lt;link&gt;</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question-container">
+                <div class="question">3. What does CSS stand for?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q3" value="a" id="q3a">
+                        <label for="q3a">Cascading Style Sheets</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="b" id="q3b">
+                        <label for="q3b">Creative Style Sheets</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="c" id="q3c">
+                        <label for="q3c">Computer Style Sheets</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question-container">
+                <div class="question">4. Which property is used to change the background color in CSS?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q4" value="a" id="q4a">
+                        <label for="q4a">color</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="b" id="q4b">
+                        <label for="q4b">bgcolor</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="c" id="q4c">
+                        <label for="q4c">background-color</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question-container">
+                <div class="question">5. How do you write a comment in JavaScript?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q5" value="a" id="q5a">
+                        <label for="q5a">// This is a comment</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="b" id="q5b">
+                        <label for="q5b">&lt;!-- This is a comment --&gt;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="c" id="q5c">
+                        <label for="q5c"># This is a comment</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question-container">
+                <div class="question">6. What is the correct way to declare a JavaScript variable?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q6" value="a" id="q6a">
+                        <label for="q6a">variable name;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="b" id="q6b">
+                        <label for="q6b">var name;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="c" id="q6c">
+                        <label for="q6c">v name;</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question-container">
+                <div class="question">7. What does AI stand for?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q7" value="a" id="q7a">
+                        <label for="q7a">Automated Intelligence</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" value="b" id="q7b">
+                        <label for="q7b">Artificial Intelligence</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" value="c" id="q7c">
+                        <label for="q7c">Automatic Information</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question-container">
+                <div class="question">8. Which of these is a machine learning technique?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q8" value="a" id="q8a">
+                        <label for="q8a">Linear Regression</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" value="b" id="q8b">
+                        <label for="q8b">Binary Search</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" value="c" id="q8c">
+                        <label for="q8c">Bubble Sort</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question-container">
+                <div class="question">9. What is the main purpose of neural networks in AI?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q9" value="a" id="q9a">
+                        <label for="q9a">To simulate human brain function for pattern recognition</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" value="b" id="q9b">
+                        <label for="q9b">To create better computer hardware</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" value="c" id="q9c">
+                        <label for="q9c">To improve internet speed</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question-container">
+                <div class="question">10. What is the output of 2 + "2" in JavaScript?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q10" value="a" id="q10a">
+                        <label for="q10a">4</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" value="b" id="q10b">
+                        <label for="q10b">"22"</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" value="c" id="q10c">
+                        <label for="q10c">"4"</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question-container">
+                <div class="question">11. Which HTML element is used for the largest heading?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q11" value="a" id="q11a">
+                        <label for="q11a">&lt;h6&gt;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" value="b" id="q11b">
+                        <label for="q11b">&lt;h1&gt;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" value="c" id="q11c">
+                        <label for="q11c">&lt;head&gt;</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question-container">
+                <div class="question">12. What is the correct way to create a function in JavaScript?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q12" value="a" id="q12a">
+                        <label for="q12a">function = myFunction()</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" value="b" id="q12b">
+                        <label for="q12b">function myFunction()</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" value="c" id="q12c">
+                        <label for="q12c">create myFunction()</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question-container">
+                <div class="question">13. Which of these is NOT a JavaScript data type?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q13" value="a" id="q13a">
+                        <label for="q13a">number</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" value="b" id="q13b">
+                        <label for="q13b">boolean</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" value="c" id="q13c">
+                        <label for="q13c">character</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question-container">
+                <div class="question">14. What is the purpose of the "alt" attribute in an image tag?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q14" value="a" id="q14a">
+                        <label for="q14a">To provide alternative text when the image cannot be displayed</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" value="b" id="q14b">
+                        <label for="q14b">To align the image</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" value="c" id="q14c">
+                        <label for="q14c">To add a border to the image</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question-container">
+                <div class="question">15. Which of these is a supervised learning algorithm?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q15" value="a" id="q15a">
+                        <label for="q15a">K-means clustering</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" value="b" id="q15b">
+                        <label for="q15b">Decision Tree</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" value="c" id="q15c">
+                        <label for="q15c">Principal Component Analysis</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question-container">
+                <div class="question">16. What does API stand for?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q16" value="a" id="q16a">
+                        <label for="q16a">Automated Programming Interface</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" value="b" id="q16b">
+                        <label for="q16b">Application Programming Interface</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" value="c" id="q16c">
+                        <label for="q16c">Advanced Programming Instruction</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question-container">
+                <div class="question">17. Which HTML tag is used to define an unordered list?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q17" value="a" id="q17a">
+                        <label for="q17a">&lt;ol&gt;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" value="b" id="q17b">
+                        <label for="q17b">&lt;ul&gt;</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" value="c" id="q17c">
+                        <label for="q17c">&lt;list&gt;</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question-container">
+                <div class="question">18. What is the correct CSS syntax for making all paragraph elements bold?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q18" value="a" id="q18a">
+                        <label for="q18a">p {text-size: bold;}</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" value="b" id="q18b">
+                        <label for="q18b">p {font-weight: bold;}</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" value="c" id="q18c">
+                        <label for="q18c">p {style: bold;}</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question-container">
+                <div class="question">19. Which of these is NOT a valid JavaScript variable name?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q19" value="a" id="q19a">
+                        <label for="q19a">_myVar</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q19" value="b" id="q19b">
+                        <label for="q19b">2ndVar</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q19" value="c" id="q19c">
+                        <label for="q19c">$myVar</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question-container">
+                <div class="question">20. What is the purpose of the "viewport" meta tag?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q20" value="a" id="q20a">
+                        <label for="q20a">To make the website responsive on mobile devices</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q20" value="b" id="q20b">
+                        <label for="q20b">To improve SEO</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q20" value="c" id="q20c">
+                        <label for="q20c">To add a view counter to the page</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Submit Exam</button>
+        </form>
+        
+        <div id="result" class="result">
+            <h2 id="result-title">Exam Result</h2>
+            <div class="score-display">Your score: <span id="score">0</span>/20 (<span id="percentage">0</span>%)</div>
+            <p id="result-message"></p>
+            <button id="success-btn" class="success-btn" style="display: none;">Request Registration Link</button>
+            <button id="email-btn" class="email-btn" style="display: none;">Email Us About Enrollment</button>
+        </div>
+    </div>
+
+    <script>
+        // Check if already submitted
+        if (localStorage.getItem('examSubmitted') === 'true') {
+            disableExam();
+            showPreviousResult();
+        }
+
+        function disableExam() {
+            const form = document.getElementById('examForm');
+            form.classList.add('already-submitted');
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach(input => input.disabled = true);
+            document.querySelector('button[type="submit"]').disabled = true;
+        }
+
+        function showPreviousResult() {
+            const previousScore = localStorage.getItem('examScore');
+            const previousPercentage = localStorage.getItem('examPercentage');
+            const passed = localStorage.getItem('examPassed') === 'true';
+            
+            document.getElementById('score').textContent = previousScore;
+            document.getElementById('percentage').textContent = previousPercentage;
+            
+            const resultDiv = document.getElementById('result');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            const successBtn = document.getElementById('success-btn');
+            const emailBtn = document.getElementById('email-btn');
+            
+            if (passed) {
+                resultDiv.className = 'result passed';
+                resultTitle.textContent = "🎉 Congratulations!";
+                resultMessage.innerHTML = `You scored ${previousScore}/20 (${previousPercentage}%) and qualified for the program!<br><br>
+                To receive your registration link, please click the button below to email us with your result screenshot. Our team will verify and send you the enrollment details within 24 hours.`;
+                successBtn.style.display = 'block';
+                emailBtn.style.display = 'none';
+            } else {
+                resultDiv.className = 'result failed';
+                resultTitle.textContent = "Exam Result";
+                resultMessage.innerHTML = `You scored ${previousScore}/20 (${previousPercentage}%).<br><br>
+                Unfortunately, you didn't meet the 70% passing criteria. Please review the basic concepts and try again later. If you believe you deserve special consideration, you may email us.`;
+                successBtn.style.display = 'none';
+                emailBtn.style.display = 'block';
+            }
+            
+            resultDiv.style.display = 'block';
+        }
+
+        function createConfetti() {
+            const colors = ['#4361ee', '#4cc9f0', '#f72585', '#7209b7', '#3a0ca3'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.width = (Math.random() * 8 + 6) + 'px';
+                confetti.style.height = confetti.style.width;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        document.getElementById('examForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Define correct answers
+            const correctAnswers = {
+                q1: 'a', q2: 'a', q3: 'a', q4: 'c', q5: 'a',
+                q6: 'b', q7: 'b', q8: 'a', q9: 'a', q10: 'b',
+                q11: 'b', q12: 'b', q13: 'c', q14: 'a', q15: 'b',
+                q16: 'b', q17: 'b', q18: 'b', q19: 'b', q20: 'a'
+            };
+            
+            // Calculate score
+            let score = 0;
+            for (let i = 1; i <= 20; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedOption && selectedOption.value === correctAnswers[`q${i}`]) {
+                    score++;
+                }
+            }
+            
+            // Calculate percentage
+            const percentage = (score / 20) * 100;
+            
+            // Display results
+            document.getElementById('score').textContent = score;
+            document.getElementById('percentage').textContent = percentage.toFixed(0);
+            
+            const resultDiv = document.getElementById('result');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            const successBtn = document.getElementById('success-btn');
+            const emailBtn = document.getElementById('email-btn');
+            
+            if (percentage >= 70) {
+                resultDiv.className = 'result passed';
+                resultTitle.textContent = "🎉 Congratulations!";
+                resultMessage.innerHTML = `You scored ${score}/20 (${percentage.toFixed(0)}%) and qualified for the program!<br><br>
+                To receive your registration link, please click the button below to email us with your result screenshot. Our team will verify and send you the enrollment details within 24 hours.`;
+                successBtn.style.display = 'block';
+                emailBtn.style.display = 'none';
+                createConfetti();
+            } else {
+                resultDiv.className = 'result failed';
+                resultTitle.textContent = "Exam Result";
+                resultMessage.innerHTML = `You scored ${score}/20 (${percentage.toFixed(0)}%).<br><br>
+                Unfortunately, you didn't meet the 70% passing criteria. Please review the basic concepts and try again later. If you believe you deserve special consideration, you may email us.`;
+                successBtn.style.display = 'none';
+                emailBtn.style.display = 'block';
+            }
+            
+            resultDiv.style.display = 'block';
+            
+            // Store submission in localStorage
+            localStorage.setItem('examSubmitted', 'true');
+            localStorage.setItem('examScore', score);
+            localStorage.setItem('examPercentage', percentage.toFixed(0));
+            localStorage.setItem('examPassed', percentage >= 70);
+            
+            disableExam();
+            
+            // Scroll to result
+            setTimeout(() => {
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        });
+        
+        document.getElementById('success-btn').addEventListener('click', function() {
+            const score = document.getElementById('score').textContent;
+            const percentage = document.getElementById('percentage').textContent;
+            const subject = "Request for Registration Link - Entrance Exam Passed";
+            const body = `Dear Web Development + AI Program Team,
+
+I successfully passed the entrance exam with a score of ${score}/20 (${percentage}%). 
+
+I'm very excited to join this program because I'm passionate about web development and AI, and I believe this course will help me achieve my career goals.
+
+I've attached the screenshot of my exam result as requested. Please send me the registration link at your earliest convenience.
+
+Looking forward to your positive response.
+
+Best regards,
+[Your Name]`;
+            
+            window.location.href = `mailto:webox.service@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        });
+        
+        document.getElementById('email-btn').addEventListener('click', function() {
+            const score = document.getElementById('score').textContent;
+            const percentage = document.getElementById('percentage').textContent;
+            const subject = "Request for Enrollment After Failing Entrance Exam";
+            const body = `Dear Admissions Team,
+
+I took the entrance exam but scored ${score}/20 (${percentage}%). Although I didn't meet the passing criteria, I'm highly motivated to join this program.
+
+I've been learning web development basics and I'm committed to improving my skills. I believe with proper guidance, I can excel in this field.
+
+I've attached my exam result screenshot for your reference. I would appreciate if you could consider my application.
+
+Thank you for your time and consideration.
+
+Best regards,
+[Your Name]`;
+            
+            window.location.href = `mailto:webox.service@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        });
+    </script>
+</body>
+</html>
